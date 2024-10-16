@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/redirect")
-public class Humm extends HttpServlet {
+@WebServlet("/checkvaild")
+public class CheckVaildServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,8 +26,7 @@ public class Humm extends HttpServlet {
 
         if (!isTitleValid) {
             out.println("<h2>제목은 5자 이상이어야 합니다.</h2>");
-        }
-        if (!isContentValid) {
+        }else if(!isContentValid) {
             out.println("<h2>내용은 10자 이상이어야 합니다.</h2>");
         }
         out.close();
