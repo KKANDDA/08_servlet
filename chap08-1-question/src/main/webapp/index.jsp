@@ -22,13 +22,30 @@
 
     <h2></h2>
     <h1>게시글 작성</h1>
+    <h2></h2>
     <form action="writepost" method="post">
         <table>
-            <label>제목: <input type="text" name="title"/></label>
-            <br/>
-            <label>내용: <textarea name="content"></textarea></label>
-            <br/>
-            <button type="submit">작성하기</button>
+            <tr>
+                <td>
+                    <label>제목: </label>
+                </td>
+                <td>
+                    <input type="text" name="title"/>
+                </td>
+                <td rowspan="2">
+                    <button type="submit" style="height: 50px;">작성하기</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label>내용: </label>
+                </td>
+                <td>
+                    <textarea name="content"></textarea>
+                </td>
+            </tr>
+
         </table>
     </form>
 

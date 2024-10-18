@@ -5,10 +5,9 @@ import com.ohgiraffers.mvc.employee.model.dto.EmployeeDTO;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import static com.ohgiraffers.mvc.common.jdbc.JDBCTemplate.close;
@@ -61,17 +60,19 @@ public class EmployeeDAO {
 
     }
 
-    public EmployeeDTO allEmpInfo(Connection con) {
+    public List<EmployeeDTO> allEmpInfo(Connection con) {
         PreparedStatement pstmt = null;
         ResultSet rset = null;
-        EmployeeDTO allEmp = null;
+        List<EmployeeDTO> allEmpList = null;
         String query = prop.getProperty("allEmpInfo");
 
         try {
             pstmt =con.prepareStatement(query);
             rset = pstmt.executeQuery();
-            if (rset.next()) {
-                allEmp = new EmployeeDTO();
+            allEmpList = new ArrayList<>();
+
+            while (rset.next()) {
+                EmployeeDTO allEmp = new EmployeeDTO();
                 allEmp.setEmpId(rset.getInt("EMP_ID"));
                 allEmp.setEmpName(rset.getString("EMP_NAME"));
                 allEmp.setEmpNo(rset.getString("EMP_NO"));
@@ -86,13 +87,116 @@ public class EmployeeDAO {
                 allEmp.setHireDate(rset.getDate("HIRE_DATE"));
                 allEmp.setEntDate(rset.getDate("ENT_DATE"));
                 allEmp.setEntYn(rset.getString("ENT_YN"));
+
+                allEmpList.add(allEmp);
             }
+
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
             close(rset);
             close(pstmt);
         }
-        return allEmp;
+        return allEmpList;
+    }
+
+    public int insertEmp(Connection con, EmployeeDTO emp) {
+
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String query = prop.getProperty("insertEmp");
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, emp.getEmpId());
+            pstmt.setString(2, emp.getEmpName());
+            pstmt.setString(3, emp.getEmpNo());
+            pstmt.setString(4, emp.getEmail());
+            pstmt.setString(5, emp.getPhone());
+            pstmt.setString(6, emp.getDeptCode());
+            pstmt.setString(7, emp.getJobCode());
+            pstmt.setString(8, emp.getSalLevel());
+            pstmt.setInt(9, emp.getSalary());
+            pstmt.setDouble(10, emp.getBonus());
+            pstmt.setString(11, emp.getManagerId());
+            pstmt.setDate(12, emp.getHireDate());
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close(pstmt);
+        }
+    return result;
+    }
+
+    public int selectNewEmpId(Connection con) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+
+        int newEmpId = 0;
+
+        String query = prop.getProperty("selectNewEmpId");
+
+        try {
+            pstmt = con.prepareStatement(query);
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) { // rset에 다음이 있느냐는 말은 rset이 성공했는 냐는 뜻이다. 성공했으면 true!
+                newEmpId = rset.getInt("EMP_ID");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close(rset);
+            close(pstmt);
+
+        }
+        return newEmpId;
+    }
+
+    public int firedEmp(Connection con, int empId, Date entDate) {
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String query = prop.getProperty("firedEmp");
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setDate(1, entDate);
+            pstmt.setInt(2, empId);
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close(pstmt);
+        }
+        return result;
+    }
+
+    public int deleteEmp(Connection con, int id) {
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String query = prop.getProperty("deleteEmp");
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, id);
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close(pstmt);
+        }
+        return result;
     }
 }

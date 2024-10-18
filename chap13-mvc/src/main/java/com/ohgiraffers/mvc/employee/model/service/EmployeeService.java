@@ -4,9 +4,10 @@ import com.ohgiraffers.mvc.employee.model.dao.EmployeeDAO;
 import com.ohgiraffers.mvc.employee.model.dto.EmployeeDTO;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.util.List;
 
-import static com.ohgiraffers.mvc.common.jdbc.JDBCTemplate.close;
-import static com.ohgiraffers.mvc.common.jdbc.JDBCTemplate.getConnection;
+import static com.ohgiraffers.mvc.common.jdbc.JDBCTemplate.*;
 
 public class EmployeeService {
 
@@ -28,14 +29,62 @@ public class EmployeeService {
     }
 
 
-    public EmployeeDTO allEmpInfo() {
+    public List<EmployeeDTO> allEmpInfo() {
 
         Connection con = getConnection();
 
-        EmployeeDTO allEmp =empDAO.allEmpInfo(con);
+        List<EmployeeDTO> allEmp = empDAO.allEmpInfo(con);
 
         close(con);
 
         return allEmp;
+    }
+
+    public int selectNewEmpId() {
+
+        // AUTO_INCREMENT가 걸려 있는 경우는 필요 없지만, 제일 끝 번호를 추적해 직접 값을 넣어주는 메소드
+        Connection con = getConnection();
+        int newEmpId = empDAO.selectNewEmpId(con);
+        close(con);
+        return newEmpId;
+    }
+
+    public int insertEmp(EmployeeDTO emp) {
+        Connection con = getConnection();
+        int result = empDAO.insertEmp(con, emp);
+
+        if (result > 0){
+            commit(con);
+        }else{
+            rollback(con);
+        }
+        close(con);
+        return result;
+    }
+
+    public int firedEmp(int empId, Date entDate) {
+        Connection con = getConnection();
+        int result = empDAO.firedEmp(con, empId, entDate);
+
+        if (result > 0){
+            commit(con);
+        }else {
+            rollback(con);
+        }
+        close(con);
+        return result;
+    }
+
+    public int deleteEmp(int id) {
+        Connection con = getConnection();
+        int result = empDAO.deleteEmp(con, id);
+
+        if (result > 0){
+            commit(con);
+        }else {
+            rollback(con);
+        }
+        close(con);
+        return result;
     }
 }

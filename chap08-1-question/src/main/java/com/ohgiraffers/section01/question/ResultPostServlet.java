@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet("/checkvaild")
-public class CheckVaildServlet extends HttpServlet {
+public class ResultPostServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

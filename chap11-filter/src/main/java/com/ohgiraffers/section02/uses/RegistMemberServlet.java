@@ -15,7 +15,7 @@ public class RegistMemberServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 암호화된 리퀘스트가 들어왔다.
+        // 필터를 거쳐 암호화된 리퀘스트가 들어왔다.
 
         String userId = req.getParameter("userId");
         String password = req.getParameter("password");
@@ -27,6 +27,7 @@ public class RegistMemberServlet extends HttpServlet {
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         System.out.println("비밀번호가 pass01인지 확인: "+passwordEncoder.matches("pass01", password));
+        // 암호화된 내용을 2번째 인자로 전달해야 한다.
 
     }
 }
